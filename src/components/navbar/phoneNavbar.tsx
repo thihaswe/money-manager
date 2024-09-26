@@ -15,7 +15,7 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import React, { useEffect, useState } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import PopUp from "../addingCategory/popUp";
+import PopUp from "../addingNote/popUp";
 
 const PhoneNavbar = () => {
   const searchParams = useSearchParams();
@@ -111,7 +111,6 @@ const PhoneNavbar = () => {
           <Button
             sx={{ flex: 1 }}
             onClick={() => {
-              console.log("hello", open);
               add();
             }}
           >

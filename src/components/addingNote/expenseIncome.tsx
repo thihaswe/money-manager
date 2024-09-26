@@ -27,12 +27,14 @@ export default function ExpenseIncome({ prop }: { prop: Prop }) {
   return (
     <Box
       sx={{
-        height: "100%",
+        height: "100vh",
         width: "100vw",
         display: "flex",
         flexDirection: "column",
+        // bgcolor: "green",
       }}
     >
+      {/* {expense income icons and categories} */}
       <Box
         sx={{
           display: "flex",
@@ -47,6 +49,7 @@ export default function ExpenseIncome({ prop }: { prop: Prop }) {
         {category.map((cat, index) => {
           return (
             <Box
+              key={cat.id}
               onClick={(e) => {
                 setSelected(cat);
                 setInput(true);
@@ -68,9 +71,9 @@ export default function ExpenseIncome({ prop }: { prop: Prop }) {
         >
           <Box>add</Box>
         </Link>
-        ;
       </Box>
-      {input && <InputBox selected={selected} />}
+      {/* {input box} */}
+      {selected && <InputBox selected={selected} />}
     </Box>
   );
 }

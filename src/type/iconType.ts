@@ -1,10 +1,10 @@
-import { ReactNode } from "react";
+import React, { ReactElement, ReactNode } from "react";
 
 // Define the IconTypes interface and IconCategory enum
 export interface IconTypes {
   id: number;
   iconCategory: IconCategory;
-  iconFile: ReactNode;
+  iconFile: ReactNode | ReactElement;
 }
 
 export enum IconCategory {
@@ -19,4 +19,14 @@ export enum IconCategory {
   health,
   finance,
   others,
+  foreach,
+}
+
+export interface IconsToShow {
+  iconCategoryName: IconCategoryName;
+  icons: IconTypes[];
+}
+export interface IconCategoryName {
+  id: number;
+  name: string;
 }

@@ -1,14 +1,17 @@
 "use client";
+
 import {
   Box,
   Button,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import ExpenseIncome from "./expenseIncome";
-import { useSearchParams } from "next/navigation";
 
 interface Prop {
   pathname: string;
@@ -16,23 +19,38 @@ interface Prop {
   open: boolean;
   setOpen: (para: boolean) => void;
 }
-
-const PopUp = ({ prop }: { prop: Prop }) => {
+const PcPopUp = ({ prop }: { prop: Prop }) => {
   const { replace, pathname, setOpen, open } = prop;
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
   const [alignment, setAlignment] = useState("expense");
   const [input, setInput] = useState<boolean>(false);
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.up("md"));
+  const cat = [
+    { id: 1, name: "a" },
+    { id: 2, name: "b" },
+    { id: 3, name: "c" },
+    { id: 4, name: "d" },
+  ];
 
-  const cat = [{ name: "a" }, { name: "b" }, { name: "c" }, { name: "d" }];
+  useEffect(() => {
+    if (!matches) {
+      setOpen(false);
+      setInput(false);
+    }
+
+    if (matches && type) {
+      setOpen(true);
+    }
+
+    setAlignment(type);
+  }, [type, matches]);
+
   //expense logic
   // const expenseCategories: Category[] = [].filter(
   //   (cat: Category) => cat.title === TitleName.expense
   // );
-
-  useEffect(() => {
-    setAlignment(type);
-  }, [type]);
 
   // style for button
   const toggleButtonStyles = {
@@ -61,25 +79,21 @@ const PopUp = ({ prop }: { prop: Prop }) => {
   };
 
   const handleCancel = () => {
-    // replace(`${pathname}`);
+    replace(`${pathname}`);
+    setAlignment("expense");
     setOpen(false);
     setInput(false);
-    setAlignment("expense");
   };
-
   return (
     <Box
       sx={{
+        display: { xs: "none", md: "block" },
         height: "100vh",
-        width: "100%",
+        width: "100vw",
         bgcolor: "black",
         position: "absolute",
         color: "white",
-        top: open ? "calc(-100vh + 80px)" : 100,
-        // top: {
-        //   md: open ? "calc(-100vh + 80px)" : 100, // For medium screens (md)
-        //   lg: open ? 0 : "calc(100vh)", // For large screens (lg)
-        // },
+        top: open ? 0 : "calc(100vh)",
         transition: "top 0.5s ease-in-out ",
       }}
     >
@@ -108,7 +122,7 @@ const PopUp = ({ prop }: { prop: Prop }) => {
       <Box
         sx={{
           display: "flex",
-          height: "100%",
+          height: "100vh",
           transition: "all 0.8s ease-in-out",
           width: "200vw",
           transform: alignment === "income" ? "translateX(-100vw)" : 0,
@@ -123,4 +137,4 @@ const PopUp = ({ prop }: { prop: Prop }) => {
   );
 };
 
-export default PopUp;
+export default PcPopUp;

@@ -1,11 +1,26 @@
 "use server";
-import { Console } from "console";
+import { revalidatePath } from "next/cache";
 import { prisma } from "./prisma";
+import { redirect } from "next/navigation";
 
-export const removeCategory = async (categoryId: number) => {
+export const addCategory = async (prevState, formData: FormData) => {
+  const {
+    categoryName,
+    selected: iconId,
+    type,
+    currentPath,
+  } = Object.fromEntries(formData);
   try {
-    const res = await prisma.category.delete({ where: { id: categoryId } });
-  } catch (err) {}
+    console.log("hello from addCategorys", categoryName, iconId, currentPath);
+    revalidatePath(currentPath.toString());
+    return { success: "true" };
+  } catch (err) {
+    if (err.message.includes("NEXT_REDIRECT")) {
+      revalidatePath(currentPath.toString());
+      return { success: "true" };
+    }
+    return { error: err.message };
+  }
 };
 
 export const updateCategory = async (
@@ -25,6 +40,17 @@ export const updateCategory = async (
     return { message: "done" };
   } catch (err) {
     console.error(err.meta.cause);
-    return { message: err.message };
+    if (err.message.includes("Invalid `prisma.category.update()` invocation")) {
+      return { message: "Record to update not found." };
+    }
+  }
+};
+
+export const removeCategory = async (categoryId: number) => {
+  try {
+    const res = await prisma.category.delete({ where: { id: categoryId } });
+  } catch (err) {
+    console.log(err);
+    return err.message;
   }
 };

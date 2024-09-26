@@ -14,14 +14,12 @@ export default function RemoveCategroy({ id }: Prop) {
     <form action={removeCategoryWithId}>
       <button
         style={{
-          textDecoration: "none",
           border: "none",
           backgroundColor: "inherit",
+          cursor: "pointer",
         }}
       >
-        <Button>
-          <RemoveCircleOutlineIcon sx={{ fontSize: 35 }} />
-        </Button>
+        <RemoveCircleOutlineIcon sx={{ fontSize: 35 }} />
       </button>
     </form>
   );
