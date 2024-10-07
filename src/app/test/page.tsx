@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import NumberGrid from "./Numpad"; // Adjust if necessary
-import MyBarChart from "../(main)/(normal)/chart/chartToDisplay";
+import MyBarChart from "../(main)/chart/chartToDisplay";
 import { fetchNoteByUserId } from "@/lib/data";
 
 const Test: React.FC = async () => {

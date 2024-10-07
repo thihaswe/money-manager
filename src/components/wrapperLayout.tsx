@@ -7,11 +7,7 @@ import { Provider } from "react-redux";
 const WrapperLayout = ({ children }: { children: ReactNode }) => {
   // for wrapping the client components
 
-  return (
-    <Box>
-      <Provider store={store}>{children}</Provider>
-    </Box>
-  );
+  return <Provider store={store}>{children}</Provider>;
 };
 
 export default WrapperLayout;

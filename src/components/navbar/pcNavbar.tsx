@@ -25,7 +25,6 @@ function PcNavbar() {
       sx={{
         height: "60px",
         bgcolor: "gray",
-        display: { xs: "none", md: "block" },
       }}
     >
       <Container maxWidth="xl" sx={{ padding: 0, height: "100%" }}>

@@ -28,20 +28,14 @@ const PopUp = ({ prop }: { prop: Prop }) => {
   const [alignment, setAlignment] = useState("expense");
   const [input, setInput] = useState<boolean>(false);
   const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.up("md"));
 
   useEffect(() => {
-    if (matches) {
-      setOpen(false);
-      setInput(false);
-    }
-
-    if (!matches && type) {
+    if (type) {
       setOpen(true);
     }
 
     setAlignment(type);
-  }, [type, matches]);
+  }, [type]);
 
   // style for button
   const toggleButtonStyles = {
@@ -81,17 +75,14 @@ const PopUp = ({ prop }: { prop: Prop }) => {
   return (
     <Box
       sx={{
-        display: { xs: "block", md: "none" },
+        // display: { xs: "block", md: "none" },
         height: "100vh",
         width: "100vw",
         bgcolor: "black",
         position: "absolute",
         color: "white",
-        top: open ? "calc(-100vh + 80px)" : 100,
-        // top: {
-        //   md: open ? "calc(-100vh + 80px)" : 100, // For medium screens (md)
-        //   lg: open ? 0 : "calc(100vh)", // For large screens (lg)
-        // },
+        top: open ? "calc(-100vh + 60px)" : 100,
+
         transition: "top 0.5s ease-in-out ",
       }}
     >

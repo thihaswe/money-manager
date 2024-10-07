@@ -49,13 +49,11 @@ const PhoneNavbar = () => {
 
   return (
     <AppBar
-      position="static"
       sx={{
         bgcolor: "gray",
-        display: { xs: "block", md: "none" },
-        height: 80,
         padding: 0,
         margin: 0,
+        position: "static",
       }}
     >
       <Container maxWidth="xl">
@@ -98,6 +96,7 @@ const PhoneNavbar = () => {
                     noWrap
                     sx={{
                       color: "inherit",
+                      fontSize: 15,
                       textDecoration: "none",
                     }}
                   >
@@ -117,7 +116,7 @@ const PhoneNavbar = () => {
           >
             <AddCircleOutlineIcon
               sx={{
-                fontSize: 65,
+                fontSize: 50,
                 color: "black",
               }}
             />
@@ -152,6 +151,7 @@ const PhoneNavbar = () => {
                   <Typography
                     noWrap
                     sx={{
+                      fontSize: 15,
                       color: "inherit",
                       textDecoration: "none",
                     }}

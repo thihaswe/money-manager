@@ -11,7 +11,7 @@ const RecordPage = async () => {
   const notes: Note[] = await fetchNoteByUserId(userId);
 
   return (
-    <Box sx={{ height: "100%" }}>
+    <Box sx={{ height: "100%", width: "100%" }}>
       <RecordList notes={notes} />
     </Box>
   );

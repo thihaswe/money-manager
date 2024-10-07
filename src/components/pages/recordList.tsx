@@ -19,12 +19,6 @@ interface Prop {
   notes: Note[];
 }
 
-interface ExtendedNotesGrouped {
-  [key: string]: Note[] | string; // Existing Record type
-  newKey?: any; // Optional additional key
-  anotherKey?: string; // Another optional additional key
-}
-
 const RecordList = ({ notes }: Prop) => {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(true);
@@ -37,27 +31,26 @@ const RecordList = ({ notes }: Prop) => {
   const icons: IconTypes[] = Icons;
 
   useEffect(() => {
-    setDate(formattedMonth); // Initialize with current month
+    setDate(formattedMonth);
   }, [formattedMonth]);
 
   useEffect(() => {
     if (notes) {
-      setLoading(false); // Data is ready, so we stop loading
+      setLoading(false);
     }
   }, [notes]);
 
   // Filter notes by the selected month
   const filteredNotes = notes.filter((note) => {
-    const noteDate = new Date(note.createdAt); // Assuming note.createdAt contains the date
+    const noteDate = new Date(note.createdAt);
     const noteMonth = String(noteDate.getMonth() + 1).padStart(2, "0");
     const noteYear = noteDate.getFullYear();
     const noteFormattedMonth = `${noteYear}-${noteMonth}`;
 
-    return noteFormattedMonth === date; // Compare note's month with selected date
+    return noteFormattedMonth === date;
   });
 
   // Calculate the total for filtered notes
-
   const totalExpense = filteredNotes.reduce((acc, note) => {
     const cat = categories.find(
       (cat) => cat.id === note.categoryId
@@ -122,81 +115,95 @@ const RecordList = ({ notes }: Prop) => {
       sx={{
         height: "100%",
         fontSize: 15,
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       {/* Input to change the month */}
-      <Input
-        type="month"
-        value={date}
-        onChange={(e) => setDate(e.target.value)} // Update the selected date
-      />
-      {/* Total amount displayed at the top */}
-      <Box
-        sx={{
-          mr: 10,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-end",
-        }}
-      >
-        {/* Container for Income and Expense */}
+      <Box>
+        <Input
+          type="month"
+          value={date}
+          onChange={(e) => setDate(e.target.value)} // Update the selected date
+        />
+        {/* Total amount displayed at the top */}
         <Box
           sx={{
+            mr: 10,
             display: "flex",
-            width: { xs: "100%", sm: "50%", md: "20%" },
-            alignItems: "space-between",
             flexDirection: "column",
+            alignItems: "flex-end",
           }}
         >
-          {/* Total Income and Income */}
+          {/* Container for Income and Expense */}
           <Box
             sx={{
               display: "flex",
-              flex: 1,
-              justifyContent: { xs: "space-between" },
+              width: { xs: "100%", sm: "50%", md: "20%" },
+              alignItems: "space-between",
+              flexDirection: "column",
             }}
           >
-            <Typography>Total Income:</Typography>
-            <Typography sx={{ textAlign: "right" }}>{totalIncome}</Typography>
-          </Box>
-          {/* Total Expense and Expense */}
-          <Box
-            sx={{
-              display: "flex",
-              flex: 1,
-              justifyContent: { xs: "space-between" },
-            }}
-          >
-            <Typography>Total Expense:</Typography>
-            <Typography sx={{ textAlign: "right" }}>{totalExpense}</Typography>
-          </Box>
-          <Divider sx={{ border: 1 }} />
-          <Box
-            sx={{
-              display: "flex",
-              flex: 1,
-              justifyContent: { xs: "space-between" },
-            }}
-          >
-            <Typography>Total :</Typography>
-            <Typography sx={{ textAlign: "right" }}>
-              {totalIncome - totalExpense}
-            </Typography>
+            {/* Total Income and Income */}
+            <Box
+              sx={{
+                display: "flex",
+                flex: 1,
+                justifyContent: { xs: "space-between" },
+              }}
+            >
+              <Typography>Total Income:</Typography>
+              <Typography sx={{ textAlign: "right" }}>{totalIncome}</Typography>
+            </Box>
+            {/* Total Expense and Expense */}
+            <Box
+              sx={{
+                display: "flex",
+                flex: 1,
+                justifyContent: { xs: "space-between" },
+              }}
+            >
+              <Typography>Total Expense:</Typography>
+              <Typography sx={{ textAlign: "right" }}>
+                {totalExpense}
+              </Typography>
+            </Box>
+            <Divider sx={{ border: 1 }} />
+            <Box
+              sx={{
+                display: "flex",
+                flex: 1,
+                justifyContent: { xs: "space-between" },
+              }}
+            >
+              <Typography>Total :</Typography>
+              <Typography sx={{ textAlign: "right" }}>
+                {totalIncome - totalExpense}
+              </Typography>
+            </Box>
           </Box>
         </Box>
       </Box>
-
       {/* Notes grouped by day */}
       <Box
         sx={{
           display: "flex",
-          flexDirection: "column",
           overflow: "auto",
-          maxHeight: { xs: "60%", md: "50%" },
+          flexDirection: "column",
+          flex: 1,
         }}
       >
         {Object.entries(notesGroupedByDay).map(([day, notesForDay], index) => (
-          <Box key={day}>
+          <Box
+            key={day}
+            sx={{
+              mb:
+                index === Object.entries(notesGroupedByDay).length - 1
+                  ? { md: "60px" }
+                  : 0,
+            }}
+          >
             {/* Show day */}
             <Typography variant="subtitle1" sx={{ mb: 1 }}>
               {day}
@@ -211,9 +218,7 @@ const RecordList = ({ notes }: Prop) => {
                   key={note.id}
                   sx={{
                     display: "flex",
-
                     mb: 1,
-
                     textAlign: "center",
                   }}
                 >
