@@ -1,23 +1,14 @@
 "use client";
-
-import { handleGoogleSignIn, logInCredentials } from "@/lib/action";
-import { useAppDispatch } from "@/store/hook";
-import { setUser } from "@/store/slices/userSlice";
-
+import { addNewUser } from "@/lib/action";
 import { Box, Button, Input, Typography } from "@mui/material";
-
-import Link from "next/link";
-import { redirect, useRouter } from "next/navigation";
-
+import { redirect } from "next/navigation";
 import { useFormState } from "react-dom";
 
-export default function LogInPage() {
-  const [state, action] = useFormState(logInCredentials, undefined);
-  const dispatch = useAppDispatch();
-  const router = useRouter();
+const Register = () => {
+  const [state, action] = useFormState(addNewUser, undefined);
+
   if (state?.success && state.success) {
-    dispatch(setUser(state.user));
-    redirect("/record");
+    redirect("/login");
   }
 
   return (
@@ -43,25 +34,44 @@ export default function LogInPage() {
           borderRadius: "3%",
         }}
       >
-        <Typography variant="h5">Log In</Typography>
         <form action={action}>
+          <Typography variant="h5">Register</Typography>
+          {/* <InputLabel sx={{ fontWeight: "bold", paddingLeft: 2 }}>
+            Email
+          </InputLabel> */}
           <Input
+            name="email"
             sx={{
               width: "100%",
               borderBottom: "1px solid black",
               padding: 2,
             }}
-            name="email"
+            type="email"
             placeholder="Email"
           ></Input>
+          {/* <InputLabel sx={{ fontWeight: "bold", paddingLeft: 2 }}>
+            Username
+          </InputLabel> */}
+
           <Input
+            name="username"
             sx={{
               width: "100%",
               borderBottom: "1px solid black",
               padding: 2,
             }}
+            placeholder="Username"
+          ></Input>
+          {/* <InputLabel sx={{ fontWeight: "bold", paddingLeft: 2 }}>
+            Password
+          </InputLabel> */}
+          <Input
             name="password"
-            type="password"
+            sx={{
+              width: "100%",
+              borderBottom: "1px solid black",
+              padding: 2,
+            }}
             placeholder="Password"
           ></Input>
           <Button
@@ -77,30 +87,18 @@ export default function LogInPage() {
               },
             }}
           >
-            Log In
+            Register
           </Button>
+          {state?.success && (
+            <Typography sx={{ color: "green" }}> {state.success}</Typography>
+          )}
+          {state?.error && (
+            <Typography sx={{ color: "red" }}> {state.error}</Typography>
+          )}
         </form>
-
-        {/* Client-side Google sign-in */}
-        <form action={handleGoogleSignIn}>
-          <Button
-            type="submit"
-            style={{ width: "100%", padding: 0, marginTop: 2 }}
-          >
-            Sign in with Google
-          </Button>
-        </form>
-
-        {state?.success && (
-          <Typography sx={{ color: "green" }}> {state.success}</Typography>
-        )}
-        {state?.error && (
-          <Typography sx={{ color: "red" }}> {state.error}</Typography>
-        )}
-        <Link href={"/register"} style={{ marginTop: 15 }}>
-          <Typography>don't have an account? register?</Typography>
-        </Link>
       </Box>
     </Box>
   );
-}
+};
+
+export default Register;

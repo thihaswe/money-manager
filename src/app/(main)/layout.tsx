@@ -1,8 +1,24 @@
+"use client";
+
 import PhoneNavbar from "@/components/navbar/phoneNavbar";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
+import { fetchCategoryThunk } from "@/store/slices/categorySlice";
 import { Box } from "@mui/material";
-import React, { ReactNode } from "react";
+import { useSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { ReactNode, Suspense, useEffect } from "react";
 
 const Layout = ({ children }: { children: ReactNode }) => {
+  const { data: session, status } = useSession();
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session?.user?.id && status === "authenticated") {
+      dispatch(fetchCategoryThunk(session.user.id));
+    }
+  }, [session?.user?.id]);
+
   return (
     // main layout
     <Box
@@ -12,6 +28,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
       }}
     >
       {/* children part (record ,report , chart) */}
+
       <Box
         sx={{
           height: {
@@ -23,6 +40,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
       >
         {children}
       </Box>
+
       {/* phone navbar   */}
       <Box
         sx={{
@@ -35,7 +53,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
           padding: 0,
         }}
       >
-        <PhoneNavbar />
+        <Suspense>
+          <PhoneNavbar />
+        </Suspense>
       </Box>
     </Box>
   );

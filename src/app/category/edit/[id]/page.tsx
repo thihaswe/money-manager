@@ -1,24 +1,28 @@
 import CategoryForm from "@/components/categoryForm/categoryForm";
-import { Box } from "@mui/material";
+import { fetchCategoryById } from "@/lib/data";
+import { Box, Typography } from "@mui/material";
 import { headers } from "next/headers";
 
-const CategoryEdit = async ({
-  params,
-  searchParams,
-}: {
+interface Prop {
   params: { id: number };
   searchParams;
-}) => {
+}
+
+const CategoryEdit = async (prop: Prop) => {
   // to get the pathname
   // const headerList = headers();
   // const pathname = headerList.get("x-current-path");
 
-  const categoryId: number = Number(params.id);
-  // const category = await fetchCategoryById(categoryId);
+  const categoryId: number = Number(prop.params.id);
+  const category = await fetchCategoryById(categoryId);
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <CategoryForm category={{ name: "hello", id: 1 }} />
+    <Box
+      sx={{
+        display: "flex",
+      }}
+    >
+      <CategoryForm category={category} />
     </Box>
   );
 };

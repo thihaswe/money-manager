@@ -23,7 +23,7 @@ function PcNavbar() {
     <AppBar
       position="static"
       sx={{
-        height: 80,
+        height: "60px",
         bgcolor: "gray",
         display: { xs: "none", md: "block" },
       }}
@@ -47,7 +47,6 @@ function PcNavbar() {
             >
               <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
               <Typography
-                variant="h6"
                 noWrap
                 sx={{
                   mr: 2,
@@ -81,6 +80,7 @@ function PcNavbar() {
                     sx={{
                       color: "inherit",
                       textDecoration: "none",
+                      fontSize: 13,
                     }}
                   >
                     {link.label}
@@ -93,8 +93,8 @@ function PcNavbar() {
               <Link href={"/profile"}>
                 <Box
                   sx={{
-                    width: 50,
-                    height: 50,
+                    width: 30,
+                    height: 30,
                     position: "relative",
                     borderRadius: "50%", // Ensures the box is circular
                     overflow: "hidden", // Ensures the image is clipped to the circle

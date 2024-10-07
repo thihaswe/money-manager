@@ -6,10 +6,11 @@ import { removeCategory } from "@/lib/action";
 
 interface Prop {
   id: number;
+  pathToRevalidate: string;
 }
 
-export default function RemoveCategroy({ id }: Prop) {
-  const removeCategoryWithId = removeCategory.bind(null, id);
+export default function RemoveCategroy({ id, pathToRevalidate }: Prop) {
+  const removeCategoryWithId = removeCategory.bind(null, id, pathToRevalidate);
   return (
     <form action={removeCategoryWithId}>
       <button

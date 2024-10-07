@@ -2,9 +2,8 @@
 import { AddCircle } from "@mui/icons-material";
 import { Box, Button } from "@mui/material";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import PcPopUp from "../addingNote/pcPopUp";
-import PopUp from "../addingNote/popUp";
 
 const AddCategoryButton = () => {
   const searchParams = useSearchParams();
@@ -41,11 +40,12 @@ const AddCategoryButton = () => {
           add();
         }}
       >
-        <AddCircle sx={{ fontSize: 80 }} />
+        <AddCircle sx={{ fontSize: 50 }} />
       </Button>
-      {/* {pc pop u[]} */}
-      <PcPopUp prop={{ replace, pathname, setOpen, open }} />/
-      {/* <PopUp prop={{ replace, pathname, setOpen, open }} /> */}
+      {/* {pc pop } */}
+      <Suspense fallback={<div>loading,,,</div>}>
+        <PcPopUp prop={{ replace, pathname, setOpen, open }} />
+      </Suspense>
     </Box>
   );
 };

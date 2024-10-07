@@ -1,4 +1,5 @@
 "use client";
+import dynamic from "next/dynamic";
 
 import {
   Box,
@@ -6,12 +7,12 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
-  useTheme,
   useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import ExpenseIncome from "./expenseIncome";
+import { Suspense, useEffect, useState } from "react";
+const ExpenseIncome = dynamic(() => import("./expenseIncome"), { ssr: false });
 
 interface Prop {
   pathname: string;
@@ -27,12 +28,16 @@ const PcPopUp = ({ prop }: { prop: Prop }) => {
   const [input, setInput] = useState<boolean>(false);
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up("md"));
-  const cat = [
-    { id: 1, name: "a" },
-    { id: 2, name: "b" },
-    { id: 3, name: "c" },
-    { id: 4, name: "d" },
-  ];
+  // const categories = useAppSelector((store) => store.category.categories);
+
+  // // expense logic
+  // const expenseCategories: Category[] = categories.filter(
+  //   (cat: Category) => cat.title === TitleName.expense
+  // );
+  // //income logic
+  // const incomeCategories: Category[] = categories.filter(
+  //   (cat: Category) => cat.title === TitleName.income
+  // );
 
   useEffect(() => {
     if (!matches) {
@@ -47,14 +52,10 @@ const PcPopUp = ({ prop }: { prop: Prop }) => {
     setAlignment(type);
   }, [type, matches]);
 
-  //expense logic
-  // const expenseCategories: Category[] = [].filter(
-  //   (cat: Category) => cat.title === TitleName.expense
-  // );
-
   // style for button
   const toggleButtonStyles = {
     color: "white",
+    fontSize: 10,
     "&.Mui-selected": {
       color: "black",
       backgroundColor: "white",
@@ -98,13 +99,14 @@ const PcPopUp = ({ prop }: { prop: Prop }) => {
       }}
     >
       <Button onClick={handleCancel}>
-        <Typography>cancel</Typography>
+        <Typography sx={{ color: "white" }}>cancel</Typography>
       </Button>
 
       {/* {toogle} */}
+
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <ToggleButtonGroup
-          sx={{ border: "1px solid grey" }}
+          sx={{ border: "1px solid grey", mb: 5 }}
           value={alignment}
           exclusive
           onChange={(e) => {
@@ -129,9 +131,14 @@ const PcPopUp = ({ prop }: { prop: Prop }) => {
         }}
       >
         {/* {expense box} */}
-        <ExpenseIncome prop={{ category: cat, setInput, input, setOpen }} />
+        <Suspense fallback={<div>loading</div>}>
+          <ExpenseIncome prop={{ setInput, input, setOpen, alignment }} />
+        </Suspense>
+
         {/* {income box} */}
-        <ExpenseIncome prop={{ category: cat, setInput, input, setOpen }} />
+        <Suspense fallback={<div>loading</div>}>
+          <ExpenseIncome prop={{ setInput, input, setOpen, alignment }} />
+        </Suspense>
       </Box>
     </Box>
   );

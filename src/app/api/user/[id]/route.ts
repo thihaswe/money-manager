@@ -2,7 +2,6 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  console.log("methof is", request.method);
   const data = {
     id: params.id,
     name: "John Doe",

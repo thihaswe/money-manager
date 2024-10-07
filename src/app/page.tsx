@@ -1,7 +1,6 @@
-import { Box } from "@mui/material";
 import { auth, signIn, signOut } from "@/lib/auth";
+import { Box } from "@mui/material";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 
 export default async function Home() {
   const session = await auth(); // Fetching the session
@@ -15,7 +14,7 @@ export default async function Home() {
       <form
         action={async () => {
           "use server";
-          await signOut();
+          await signOut({ redirectTo: "/login" });
         }}
       >
         <button type="submit">Sign Out</button>
@@ -32,7 +31,8 @@ export default async function Home() {
         action={async () => {
           "use server";
           await signIn("credentials", {
-            email: "test@gmail.com",
+            email: "john@gmail.com",
+            password: "doe",
           }); // Trigger sign-in when user is not authenticated
         }}
       >

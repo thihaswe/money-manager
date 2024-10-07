@@ -8,9 +8,11 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import ExpenseIncome from "./expenseIncome";
+import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+
+const ExpenseIncome = dynamic(() => import("./expenseIncome"), { ssr: false });
 
 interface Prop {
   pathname: string;
@@ -27,12 +29,6 @@ const PopUp = ({ prop }: { prop: Prop }) => {
   const [input, setInput] = useState<boolean>(false);
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up("md"));
-  const cat = [
-    { id: 1, name: "a" },
-    { id: 2, name: "b" },
-    { id: 3, name: "c" },
-    { id: 4, name: "d" },
-  ];
 
   useEffect(() => {
     if (matches) {
@@ -49,6 +45,8 @@ const PopUp = ({ prop }: { prop: Prop }) => {
 
   // style for button
   const toggleButtonStyles = {
+    fontSize: 10,
+
     color: "white",
     "&.Mui-selected": {
       color: "black",
@@ -104,7 +102,7 @@ const PopUp = ({ prop }: { prop: Prop }) => {
       {/* {toogle} */}
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <ToggleButtonGroup
-          sx={{ border: "1px solid grey" }}
+          sx={{ border: "1px solid grey", mb: 5 }}
           value={alignment}
           exclusive
           onChange={(e) => {
@@ -122,16 +120,20 @@ const PopUp = ({ prop }: { prop: Prop }) => {
       <Box
         sx={{
           display: "flex",
-          height: "100%",
+          height: "100vh",
           transition: "all 0.8s ease-in-out",
           width: "200vw",
           transform: alignment === "income" ? "translateX(-100vw)" : 0,
         }}
       >
-        {/* {expense box} */}
-        <ExpenseIncome prop={{ category: cat, setInput, input, setOpen }} />
+        <Suspense fallback={<div>loading</div>}>
+          {/* {expense box} */}
+          <ExpenseIncome prop={{ setInput, input, setOpen, alignment }} />
+        </Suspense>
         {/* {income box} */}
-        <ExpenseIncome prop={{ category: cat, setInput, input, setOpen }} />
+        <Suspense fallback={<div>loading</div>}>
+          <ExpenseIncome prop={{ setInput, input, setOpen, alignment }} />
+        </Suspense>
       </Box>
     </Box>
   );

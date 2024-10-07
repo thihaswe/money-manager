@@ -1,9 +1,10 @@
 "use client";
-import { funcIcons } from "@/lib/data";
+import { funcIcons } from "@/lib/util";
 import { AddCircle } from "@mui/icons-material";
 import { Box, Button, Typography } from "@mui/material";
 import IconSelection from "./iconSelection";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 const AddNewCategory = () => {
   const [open, setOpen] = useState(false);
@@ -20,7 +21,7 @@ const AddNewCategory = () => {
         sx={{
           width: "80%",
           bgcolor: "white",
-          fontSize: 30,
+
           mb: 5,
           color: "black", // Ensure the text color contrasts with the background
           transition: "all 0.3s ease", // Ensure smooth transition for both hover and normal states
@@ -33,11 +34,13 @@ const AddNewCategory = () => {
           setOpen(true);
         }}
       >
-        <AddCircle sx={{ fontSize: 50 }} />
-        AddNewCategory
+        <AddCircle sx={{ fontSize: 30 }} />
+        <Typography sx={{ fontSize: { xs: 15, sm: 25, md: 35, lg: 40 } }}>
+          AddNewCategory
+        </Typography>
       </Button>
       {/* {all icons components} */}
-      <IconSelection prop={{ open, setOpen }} />
+      {open && <IconSelection prop={{ open, setOpen }} />}
     </Box>
   );
 };

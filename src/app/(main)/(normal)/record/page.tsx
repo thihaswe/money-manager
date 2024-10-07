@@ -1,9 +1,18 @@
+import RecordList from "@/components/pages/recordList";
+import { auth } from "@/lib/auth";
+import { fetchNoteByUserId } from "@/lib/data";
 import { Box } from "@mui/material";
 
-const RecordPage = () => {
+import { Note } from "@prisma/client";
+
+const RecordPage = async () => {
+  const { user } = await auth();
+  const userId = Number(user.id);
+  const notes: Note[] = await fetchNoteByUserId(userId);
+
   return (
-    <Box sx={{ position: "relative", height: "100%" }}>
-      <Box sx={{ height: "100%", bgcolor: "" }}>RecordPage</Box>
+    <Box sx={{ height: "100%" }}>
+      <RecordList notes={notes} />
     </Box>
   );
 };

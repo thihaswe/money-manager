@@ -1,9 +1,11 @@
 "use client";
-import { funcIcons } from "@/lib/data";
+import { funcIcons } from "@/lib/util";
 import { Box, Button, Typography } from "@mui/material";
 import React, { isValidElement, ReactElement, useState } from "react";
 import { Icons } from "../buttons_and_icons/icons";
 import InputBox from "../addingNote/inputBox";
+import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 interface Prop {
   open: boolean;
@@ -14,32 +16,40 @@ const IconSelection = ({ prop }: { prop: Prop }) => {
   const { open, setOpen } = prop;
   const [selected, setSelected] = useState(undefined);
   const icons = Icons;
+  const searchParams = useSearchParams();
+  const { data } = useSession();
+
   // const iconsCategory = [...new Set(icons.map((icon) => icon.iconCategory))];
   const iconsToShow = funcIcons(icons);
   return (
     <Box
       sx={{
-        position: "fixed", // Use fixed positioning to cover the whole screen
+        position: "fixed",
         width: "100vw",
         height: open ? "100%" : 0,
         bgcolor: "black",
         color: "white",
-        bottom: open ? 0 : "", // Ensure it sticks to the top when opened
+        bottom: open ? 0 : "",
         left: 0, // Ensure it covers the whole width
         transition: "height 0.3s ease",
         flexDirection: "column",
-        // Smooth opening animation
       }}
     >
-      <Button
-        sx={{}}
-        onClick={() => {
-          setOpen(false);
-          setSelected(undefined);
-        }}
-      >
-        <Typography>cancel</Typography>
-      </Button>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        {" "}
+        <Button
+          sx={{}}
+          onClick={() => {
+            setOpen(false);
+            setSelected(undefined);
+          }}
+        >
+          <Typography sx={{ color: "white" }}>cancel</Typography>
+        </Button>
+        <Typography sx={{ color: "white", fontSize: 35 }}>
+          {searchParams.get("type")}
+        </Typography>
+      </Box>
 
       <Box sx={{ display: "flex", height: "90vh", flexDirection: "column" }}>
         <Box sx={{ flex: 3, overflow: "auto" }}>

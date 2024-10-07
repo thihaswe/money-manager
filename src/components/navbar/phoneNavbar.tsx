@@ -1,4 +1,9 @@
 "use client";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import InsertChartIcon from "@mui/icons-material/InsertChart";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import SummarizeIcon from "@mui/icons-material/Summarize";
 import {
   AppBar,
   Box,
@@ -7,14 +12,9 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
-import InsertChartIcon from "@mui/icons-material/InsertChart";
-import SummarizeIcon from "@mui/icons-material/Summarize";
 import Link from "next/link";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import React, { useEffect, useState } from "react";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import PopUp from "../addingNote/popUp";
 
 const PhoneNavbar = () => {
@@ -108,6 +108,7 @@ const PhoneNavbar = () => {
             })}
           </Box>
           {/* middle  */}
+
           <Button
             sx={{ flex: 1 }}
             onClick={() => {
@@ -165,8 +166,9 @@ const PhoneNavbar = () => {
       </Container>
 
       {/* add item */}
-
-      <PopUp prop={{ replace, pathname, setOpen, open }} />
+      <Suspense>
+        <PopUp prop={{ replace, pathname, setOpen, open }} />
+      </Suspense>
     </AppBar>
   );
 };

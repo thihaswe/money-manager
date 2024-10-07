@@ -2,7 +2,7 @@ import AddCategoryButton from "@/components/buttons_and_icons/addCategoryButton"
 import PcNavbar from "@/components/navbar/pcNavbar";
 import { AddCircle } from "@mui/icons-material";
 import { Box, Button } from "@mui/material";
-import React, { ReactNode } from "react";
+import React, { ReactNode, Suspense } from "react";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   return (
@@ -28,7 +28,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
       </Box>
       {/* {pop up} */}
       <Box sx={{ xs: "none", md: "block" }}>
-        <AddCategoryButton />
+        <Suspense>
+          <AddCategoryButton />
+        </Suspense>
       </Box>
     </Box>
   );

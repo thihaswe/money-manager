@@ -11,6 +11,7 @@ interface CounterState {
 
 // Define the initial state using that type
 const initialState: UserInitialState = {
+  user: undefined,
   isLoading: false,
   error: null,
 };
@@ -20,6 +21,9 @@ export const userSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
+    setUser: (state, action) => {
+      state.user = action.payload;
+    },
     increment: (state) => {
       state.isLoading = !state.isLoading;
     },
@@ -28,7 +32,7 @@ export const userSlice = createSlice({
   },
 });
 
-export const { increment, decrement } = userSlice.actions;
+export const { increment, decrement, setUser } = userSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectLoading = (state: RootState) => state.user.isLoading;

@@ -1,19 +1,19 @@
+"use client";
+import { addCategory, addnewNote } from "@/lib/action";
 import { IconTypes } from "@/type/iconType";
-import { Box, Button, Input } from "@mui/material";
+import { Box, Button, Input, Typography } from "@mui/material";
 import { Category } from "@prisma/client";
-import React, { isValidElement, ReactElement, useState } from "react";
-import { Icons } from "../buttons_and_icons/icons";
-import { addCategory } from "@/lib/action";
-import {
-  redirect,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
+import { redirect, usePathname, useSearchParams } from "next/navigation";
+import React, { ReactElement, useEffect, useState } from "react";
 import { useFormState } from "react-dom";
+import { Icons } from "../buttons_and_icons/icons";
+import { useSession } from "next-auth/react";
+import { BusAlertTwoTone } from "@mui/icons-material";
+import { revalidatePath } from "next/cache";
+import { oneIcon } from "@/lib/util";
 
 interface Prop {
-  selected: Category | IconTypes | any;
+  selected: Category | IconTypes;
   setSelected?: (para?: any) => void;
 }
 
@@ -41,11 +41,27 @@ function isIconTypes(selected: any): selected is IconTypes {
 const InputBox = ({ selected, setSelected }: Prop) => {
   const [inputValue, setInputValue] = useState("");
   const [state, action] = useFormState(addCategory, undefined);
+  const [dataState, dataAction] = useFormState(addnewNote, undefined);
   const icons = Icons;
   const type = useSearchParams().get("type");
   const pathname = usePathname();
   const params = useSearchParams();
   const currentPath = pathname + "?" + params.toString();
+  const { data, status } = useSession();
+  const numbers = [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "clear",
+    "0",
+    "delete",
+  ];
 
   const handleNumberClick = (value: string) => {
     setInputValue((prev) => prev + value);
@@ -54,118 +70,176 @@ const InputBox = ({ selected, setSelected }: Prop) => {
     setInputValue("");
   };
 
-  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault(); // Prevent default form submission behavior
-
-  //   const formData = new FormData(e.currentTarget);
-
-  //   // Submit the form programmatically
-  //   await addCategory(formData);
-
-  //   // Reset the selected state to undefined if the setSelected prop is passed
-  //   if (setSelected) {
-  //     setSelected(undefined);
-  //   }
-
-  //   // Optionally clear the input field after submission
-  //   setInputValue("");
-  // };
-
+  const handleDelete = () => {
+    setInputValue((prev) => prev.slice(0, -1)); // Remove the last character
+  };
   if (isCategory(selected)) {
     return (
-      <Box
-        sx={{
-          width: "100%",
-          bgcolor: "#001122",
-          flex: 2,
-          paddingBottom: 15,
-        }}
-      >
-        {/* Category or IconTypes Display */}
-        {isCategory(selected) && icons[selected.iconId - 1] && (
-          <Box sx={{ display: "flex" }}>
-            {icons.find((icon) => icon.id === selected.iconId).iconFile}
-            {selected.name}
-            <Box sx={{ margin: "20px 0" }}>
-              <input
-                type="text"
-                value={inputValue}
-                readOnly
-                placeholder="Enter number"
-                style={{
-                  fontSize: "1em",
-                  textAlign: "right",
-                  border: "1px solid #ccc",
-                }}
-              />
-            </Box>
+      <form action={dataAction}>
+        <Input name="pathname" value={pathname} type="hidden" />
+        <Input name="categoryId" value={selected.id} type="hidden" />
+        <Input value={data?.user.id} type="hidden" name="userId" />
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 5,
+            mb: 2,
+          }}
+        >
+          {icons.find((icon) => icon.id === selected.iconId)?.iconFile}
+          <Typography>{selected.name}</Typography>
+          <input
+            name="amount"
+            type="text"
+            value={inputValue}
+            readOnly
+            placeholder="Enter number"
+            style={{
+              textAlign: "right",
+              fontSize: "1em",
+              border: "1px solid #ccc",
+            }}
+          />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center", // Center align all buttons
 
-            {/* Custom Number Pad */}
-            <Box
+            mb: 3, // Add margin bottom for spacing
+            resize: "both",
+            overflow: "auto",
+          }}
+        >
+          {numbers.map((number) => (
+            <Button
+              key={number}
+              variant="contained"
+              onClick={() => {
+                if (number === "clear") {
+                  handleClear();
+                } else if (number === "delete") {
+                  handleDelete();
+                } else {
+                  handleNumberClick(number);
+                }
+              }}
               sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap: "10px",
-                width: "100%",
+                width: "calc(100vw / 3)", // Each button takes one-third of the viewport width
+                height: "30px",
+                bgcolor:
+                  number === "clear"
+                    ? "red"
+                    : number === "delete"
+                    ? "blue"
+                    : "grey",
+                "&:hover": {
+                  bgcolor:
+                    number === "clear"
+                      ? "rgba(255, 0, 0, 0.8)"
+                      : number === "delete"
+                      ? "rgba(0, 0, 255, 0.8)"
+                      : "grey",
+                },
               }}
             >
-              {["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((number) => (
-                <Button
-                  key={number}
-                  variant="contained"
-                  onClick={() => handleNumberClick(number)}
-                  sx={{
-                    fontSize: "1.5em",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  {number}
-                </Button>
-              ))}
-              {["clear", "0", "delete"].map((action) => (
-                <Button
-                  key={action}
-                  variant="contained"
-                  onClick={() => {
-                    if (action === "clear") {
-                      handleClear(); // Call the handleClear function for "clear"
-                    } else if (action === "delete") {
-                      setInputValue((prev) => prev.slice(0, -1));
-                    } else {
-                      handleNumberClick(action); // Call handleNumberClick for "0"
-                    }
-                  }}
-                  sx={{
-                    fontSize: "1.5em",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    bgcolor:
-                      action === "clear"
-                        ? "red"
-                        : "" || action === "delete"
-                        ? "orange"
-                        : "",
-
-                    "&:hover": {
-                      bgcolor:
-                        action === "clear"
-                          ? "red"
-                          : action === "delete"
-                          ? "orange"
-                          : "",
-                    },
-                  }}
-                >
-                  {action}
-                </Button>
-              ))}
-            </Box>
+              {number}
+            </Button>
+          ))}
+          <Box
+            sx={{
+              width: "100%",
+              padding: "10px", // Adjust padding for better spacing
+            }}
+          >
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                width: "100%",
+                height: "30px", // Adjust height for better visibility
+                bgcolor: "primary.main",
+                "&:hover": {
+                  bgcolor: "primary.dark",
+                },
+              }}
+            >
+              Submit
+            </Button>
           </Box>
+        </Box>
+        {/* <Box
+          sx={{
+            width: "100%",
+            display: "grid",
+            gridTemplateColumns: "auto auto auto",
+            gap: "10px",
+            // justifyContent: "center",
+            // alignItems: "center",
+            borderRadius: "8px",
+          }}
+        >
+          {numbers.map((number) => (
+            <Button
+              key={number}
+              variant="contained"
+              onClick={() => {
+                if (number === "clear") {
+                  handleClear();
+                } else if (number === "delete") {
+                  handleDelete();
+                } else {
+                  handleNumberClick(number);
+                }
+              }}
+              sx={{
+                width: "100%",
+                height: { xs: "20", sm: "50px" },
+                bgcolor:
+                  (number === "clear" && "red") ||
+                  (number === "delete" && "blue") ||
+                  "grey",
+                "&:hover": {
+                  bgcolor:
+                    number === "clear"
+                      ? "rgba(255, 0, 0, 0.8)"
+                      : number === "delete"
+                      ? "rgba(0, 0, 255, 0.8)"
+                      : "grey",
+                },
+              }}
+            >
+              {number}
+            </Button>
+          ))}
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              height: "50px",
+              width: "100%",
+              bgcolor: "primary.main",
+              "&:hover": {
+                bgcolor: "primary.dark",
+              },
+              gridColumn: "span 3",
+            }}
+          >
+            Submit
+          </Button>
+        </Box> */}
+
+        {dataState?.success && (
+            <Typography sx={{ color: "green" }}>{dataState.success}</Typography>
+          ) &&
+          redirect(pathname.toString())}
+        {dataState?.error && (
+          <Typography sx={{ color: "red" }}> {dataState.error}</Typography>
         )}
-      </Box>
+      </form>
     );
   } else if (isIconTypes(selected))
     return (
@@ -173,59 +247,59 @@ const InputBox = ({ selected, setSelected }: Prop) => {
         sx={{
           width: "100%",
           bgcolor: "#001122",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 10,
         }}
       >
-        {isIconTypes(selected) && (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
-            <Box>
-              {React.isValidElement(selected.iconFile)
-                ? React.cloneElement(selected.iconFile as ReactElement, {
-                    style: { fontSize: 50 }, // Use style here for broad compatibility
-                  })
-                : selected.iconFile}
-            </Box>
-            <Box sx={{ margin: "20px 0" }}>
-              <form action={action}>
-                <Input name="selected" value={selected.id} type="hidden" />
-                <Input name="type" value={type} type="hidden" />
-                <Input name="currentPath" value={currentPath} type="hidden" />
-                {/* {need to add user informations} */}
-                <Input
-                  onChange={(e) => {
-                    setInputValue(e.target.value);
-                  }}
-                  type="text"
-                  name="categoryName"
-                  placeholder="add new category"
-                  value={inputValue}
-                  style={{
-                    color: "white",
-                    fontSize: "1em",
-                    textAlign: "right",
-                    border: "1px solid black",
-                    padding: 5,
-                  }}
-                />
-                <button style={{ marginLeft: 50 }} type="submit">
-                  Ok
-                </button>
-                {state?.success &&
-                  state.success &&
-                  redirect(currentPath.toString())}
-                {state?.error && state.error}
-              </form>
-            </Box>
-          </Box>
-        )}
+        <Box>
+          {React.isValidElement(selected.iconFile)
+            ? React.cloneElement(selected.iconFile as ReactElement, {
+                style: { fontSize: 50 }, // Use style here for broad compatibility
+              })
+            : selected.iconFile}
+        </Box>
+        <Box sx={{ margin: "20px 0" }}>
+          <form action={action}>
+            <Input name="selected" value={selected.id} type="hidden" />
+            <Input name="type" value={type} type="hidden" />
+            <Input name="currentPath" value={currentPath} type="hidden" />
+            {/* <Input value={data.user.id} type="hidden" name="userId" /> */}
+            {/* {need to add user informations} */}
+            <Input
+              onChange={(e) => {
+                setInputValue(e.target.value); // Allow only if the input is 15 characters or less
+              }}
+              type="text"
+              inputProps={{ maxLength: 15 }}
+              name="categoryName"
+              placeholder="add new category"
+              value={inputValue}
+              style={{
+                color: "white",
+                fontSize: "1em",
+                textAlign: "right",
+                border: "1px solid black",
+                padding: 5,
+              }}
+            />
+            <button style={{ marginLeft: 50 }} type="submit">
+              Ok
+            </button>
+            {state?.success && (
+                <Typography sx={{ color: "green" }}>{state.success}</Typography>
+              ) &&
+              redirect(currentPath.toString())}
+            {state?.error && (
+              <Typography sx={{ color: "red" }}> {state.error}</Typography>
+            )}
+          </form>
+        </Box>
       </Box>
     );
 };
 
 export default InputBox;
+
+/* Custom Number Pad */

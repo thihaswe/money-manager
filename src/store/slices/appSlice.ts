@@ -2,7 +2,7 @@ import { AppInitialState } from "@/type/appType";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState: AppInitialState = {
-  appInit: false,
+  appInit: true,
   isLoading: false,
   error: null,
 };
@@ -10,8 +10,12 @@ const initialState: AppInitialState = {
 export const appSlice = createSlice({
   name: "app",
   initialState,
-  reducers: {},
+  reducers: {
+    setInint: (state, action) => {
+      state.appInit = action.payload;
+    },
+  },
 });
 
-export const {} = appSlice.actions;
+export const { setInint } = appSlice.actions;
 export default appSlice.reducer;

@@ -1,14 +1,8 @@
+import { TitleName } from "@prisma/client";
 import { unstable_noStore as noStore } from "next/cache";
 import { prisma } from "./prisma";
-import { TitleName } from "@prisma/client";
-import {
-  IconCategory,
-  IconCategoryName,
-  IconsToShow,
-  IconTypes,
-} from "@/type/iconType";
 
-export async function fetchCategory(type: string) {
+export async function fetchCategoryByType(type: string, userId: number) {
   noStore(); // Indicate that the result should not be cached
   try {
     const data = await prisma.category.findMany({
@@ -38,25 +32,19 @@ export async function fetchCategoryById(id: number) {
   }
 }
 
-export const funcIcons = (icons: IconTypes[]): IconsToShow[] => {
-  const iconsCategory = [];
+export async function fetchCategoryByUserId(userId: number) {
+  noStore();
+  try {
+    return await prisma.category.findMany({ where: { userId } });
+  } catch (error) {}
+}
 
-  icons.map(
-    (icon: IconTypes) =>
-      !iconsCategory.includes(icon.iconCategory) &&
-      iconsCategory.push(icon.iconCategory)
-  );
-
-  const icN: IconCategoryName[] = iconsCategory.map((icn) => ({
-    id: icn,
-    name: IconCategory[icn],
-  }));
-
-  const iconsToShow: IconsToShow[] = icN.map((i) => {
-    return {
-      iconCategoryName: i,
-      icons: icons.filter((icon) => icon.iconCategory === i.id),
-    };
-  });
-  return iconsToShow;
-};
+export async function fetchNoteByUserId(userId: number) {
+  noStore();
+  try {
+    return await prisma.note.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+    });
+  } catch (error) {}
+}

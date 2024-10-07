@@ -5,13 +5,49 @@ import NextAuth from "next-auth";
 
 import authConfig from "./lib/auth.config";
 
+const { auth } = NextAuth(authConfig);
 // export const { auth: middleware } = NextAuth(authConfig);
 
-const { auth } = NextAuth(authConfig);
+// export default auth(async function middleware(req: NextRequest) {
+//   // Your custom middleware logic goes here
+
+//   //authentication
+//   const auth = req.auth;
+//   const pathname = req.nextUrl.pathname;
+//   if (!auth && pathname !== "login" && pathname !== "register") {
+//     return NextResponse.redirect(new URL("/login", req.url));
+//   }
+//   //adding pathname to the headers
+//   const headers = new Headers(req.headers);
+//   headers.set("x-current-path", req.nextUrl.pathname);
+//   return NextResponse.next({
+//     request: {
+//       headers: headers,
+//     },
+//   });
+// });
+
 export default auth(async function middleware(req: NextRequest) {
-  // Your custom middleware logic goes here
+  // const isAuthenticated = req.auth;
+  const pathname = req.nextUrl.pathname;
+
+  const isAuth = req.cookies.get("authjs.session-token");
+
+  // Redirect if not authenticated and not on login or register page
+  if (
+    !isAuth &&
+    pathname !== "/login" &&
+    pathname !== "/register" &&
+    pathname !== "/"
+  ) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  // Add current path to the request headers
   const headers = new Headers(req.headers);
-  headers.set("x-current-path", req.nextUrl.pathname);
+  headers.set("x-current-path", pathname);
+
+  // Proceed to next middleware or route handler
   return NextResponse.next({
     request: {
       headers: headers,
