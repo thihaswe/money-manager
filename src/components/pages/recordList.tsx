@@ -23,6 +23,7 @@ const RecordList = ({ notes }: Prop) => {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(true);
   const [date, setDate] = useState<string>("");
+
   const tdy = new Date();
   const month = String(tdy.getMonth() + 1).padStart(2, "0");
   const year = tdy.getFullYear();

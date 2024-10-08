@@ -23,6 +23,8 @@ function PcNavbar() {
     <AppBar
       position="static"
       sx={{
+        display: { xs: "none", md: "block" },
+
         height: "60px",
         bgcolor: "gray",
       }}

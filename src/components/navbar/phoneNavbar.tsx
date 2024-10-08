@@ -51,9 +51,11 @@ const PhoneNavbar = () => {
     <AppBar
       sx={{
         bgcolor: "gray",
+        display: { xs: "block", md: "none" },
         padding: 0,
         margin: 0,
         position: "static",
+        height: "60px",
       }}
     >
       <Container maxWidth="xl">

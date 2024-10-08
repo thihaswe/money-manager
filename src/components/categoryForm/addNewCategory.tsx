@@ -1,10 +1,8 @@
 "use client";
-import { funcIcons } from "@/lib/util";
 import { AddCircle } from "@mui/icons-material";
 import { Box, Button, Typography } from "@mui/material";
-import IconSelection from "./iconSelection";
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import IconSelection from "./iconSelection";
 
 const AddNewCategory = () => {
   const [open, setOpen] = useState(false);

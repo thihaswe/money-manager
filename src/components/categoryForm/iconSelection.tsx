@@ -19,7 +19,6 @@ const IconSelection = ({ prop }: { prop: Prop }) => {
   const searchParams = useSearchParams();
   const { data } = useSession();
 
-  // const iconsCategory = [...new Set(icons.map((icon) => icon.iconCategory))];
   const iconsToShow = funcIcons(icons);
   return (
     <Box
@@ -30,7 +29,7 @@ const IconSelection = ({ prop }: { prop: Prop }) => {
         bgcolor: "black",
         color: "white",
         bottom: open ? 0 : "",
-        left: 0, // Ensure it covers the whole width
+        left: 0,
         transition: "height 0.3s ease",
         flexDirection: "column",
       }}

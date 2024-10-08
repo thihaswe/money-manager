@@ -25,7 +25,14 @@ const AddCategoryButton = () => {
     setOpen(true);
   };
   return (
-    <Box sx={{ width: "100vw", display: "flex", justifyContent: "center" }}>
+    <Box
+      sx={{
+        width: "100vw",
+        justifyContent: "center",
+        display: { xs: "none", md: "flex" },
+        height: "60px",
+      }}
+    >
       <Button
         onClick={() => {
           add();
